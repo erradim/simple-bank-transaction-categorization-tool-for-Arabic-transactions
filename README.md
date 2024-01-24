@@ -6,7 +6,7 @@ This application is designed to automatically categorize transactions based on a
 ## Requirements
 
 ### Frontend
-- Technologies to be used: React, Next.js, Material UI, Formik, Yup.
+- React, Material UI, Yup.
 - Key Features:
   - User-friendly interface for uploading Arabic bank transactions in CSV format.
   - File validation and upload functionality.
