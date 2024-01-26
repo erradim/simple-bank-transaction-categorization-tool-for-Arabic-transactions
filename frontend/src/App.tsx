@@ -17,8 +17,8 @@ import Link from "@mui/material/Link";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { mainListItems, secondaryListItems } from "./components/listItems";
-import Orders from "./components/Orders";
+import { mainListItems, secondaryListItems } from "../components/listItems";
+import Orders from "../components/Orders";
 
 function Copyright(props: any) {
   return (
@@ -29,8 +29,8 @@ function Copyright(props: any) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
+      <Link color="inherit" href="https://google.com/">
+        Copyright section here
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
@@ -88,7 +88,6 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 function App() {
