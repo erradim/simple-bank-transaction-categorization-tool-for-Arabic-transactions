@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class TransactionloaderConfig(AppConfig):
+class CsvprocessorConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'TransactionLoader'
+    name = 'CSVProcessor'
