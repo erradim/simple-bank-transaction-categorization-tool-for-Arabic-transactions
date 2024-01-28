@@ -7,19 +7,53 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Title from "./Title";
 
+import axios from "axios";
+
 // Generate Order Data
 function createData(
   id: number,
   transactionDate: string,
   description: string,
-  //shipTo: string,
-  //paymentMethod: string,
   amount: number
 ) {
   return { id, transactionDate, description, amount };
 }
 
-const rows = [
+interface Row {
+  id: number;
+  transactionDate: string;
+  description: string;
+  amount: number;
+}
+
+async function get_transactions(rows: Array<Row>): Promise<void> {
+  try {
+    const res = await axios.get(
+      "http://" + window.location.hostname + ":8000/get_all_transactions"
+    );
+    res.data.forEach(
+      (element: {
+        id: number;
+        transaction_date: string;
+        description: string;
+        amount: number;
+      }) => {
+        rows.push(
+          createData(
+            element.id,
+            element.transaction_date,
+            element.description,
+            element.amount
+          )
+        );
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+/*const rows = [
   createData(1, "01/01/2024", "بقالة الأمان", 150.0),
   createData(2, "02/01/2024", "فاتورة الكهرباء", 200.0),
   createData(3, "03/01/2024", "مطعم النيل", 75.5),
@@ -35,13 +69,15 @@ const rows = [
   createData(12, "03/01/2024", "مطعم النيل", 75.5),
   createData(13, "01/01/2024", "بقالة الأمان", 150.0),
   createData(14, "02/01/2024", "فاتورة الكهرباء", 200.0),
-];
+];*/
 
 function preventDefault(event: React.MouseEvent) {
   event.preventDefault();
 }
 
 export default function Orders() {
+  const rows: Array<Row> = [];
+  get_transactions(rows);
   return (
     <React.Fragment>
       <Title>Transactions</Title>

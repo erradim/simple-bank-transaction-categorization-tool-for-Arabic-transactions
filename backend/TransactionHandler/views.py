@@ -1,4 +1,4 @@
-from django.shortcuts import JsonResponse
+from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 
