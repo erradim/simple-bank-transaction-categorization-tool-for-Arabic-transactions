@@ -19,7 +19,11 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { mainListItems, secondaryListItems } from "../components/listItems";
 import Orders from "../components/Orders";
-import UploadButton from "../components/UploadButton";
+import InputFileUpload from "../components/UploadButton";
+import ParsedDataDisplay from "../components/ParsedDataDisplay";
+import Button from "@mui/material/Button";
+import * as yup from "yup";
+import axios from "axios";
 
 function Copyright(props: any) {
   return (
@@ -97,6 +101,66 @@ function App() {
     setOpen(!open);
   };
 
+  const [parsedCsvData, setParsedCsvData] = React.useState([]);
+  const handleFileParsed = (data) => {
+    setParsedCsvData(data);
+  };
+
+  // http://127.0.0.1:8000/save_transactions/
+
+  const handleSendToBackend = async () => {
+    // Define the schema for a single transaction
+    const transactionSchema = yup.object().shape({
+      transactionDate: yup
+        .date()
+        .required()
+        .transform((value) => value.toISOString().split("T")[0]),
+      description: yup.string().required(),
+      amount: yup.number().positive().required(),
+    });
+
+    // Validate each transaction in your data array
+    try {
+      const validTransactions = await Promise.all(
+        parsedCsvData.map(async (transaction) => {
+          try {
+            // Transform the date to 'dd/mm/yyyy' format
+            transaction.transactionDate = new Date(transaction.transactionDate)
+              .toLocaleDateString("en-GB")
+              .split("/")
+              .reverse()
+              .join("/");
+
+            return await transactionSchema.validate(transaction);
+          } catch (error) {
+            console.error("Validation error:", error);
+            return null;
+          }
+        })
+      );
+
+      // Filter out any null values that failed validation
+      const filteredTransactions = validTransactions.filter((t) => t !== null);
+
+      // Now, send the validated data to your backend
+      axios
+        .post("http://127.0.0.1:8000/save_transactions/", {
+          transactions: filteredTransactions,
+        })
+        .then((response) => {
+          console.log("Data successfully sent to backend", response.data);
+          // Handle successful response
+        })
+        .catch((error) => {
+          console.error("Error sending data to backend:", error);
+          // Handle error response
+        });
+    } catch (error) {
+      console.error("Error validating transactions:", error);
+      // Handle validation error
+    }
+  };
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: "flex" }}>
@@ -170,9 +234,27 @@ function App() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              {/* Upload Button */}
+              {/* Upload CSV Button */}
               <Grid item xs={12}>
-                <UploadButton />
+                <InputFileUpload onFileParsed={handleFileParsed} />
+              </Grid>
+              {/* Send Validated Data to Backend Button */}
+              <Grid item xs={12}>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    handleSendToBackend();
+                  }}
+                >
+                  Save Data
+                </Button>
+              </Grid>
+              {/* Display Parsed CSV Data */}
+              <Grid item xs={12}>
+                <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
+                  {/* Component to display parsed data, passing the data as a prop */}
+                  <ParsedDataDisplay data={parsedCsvData} />
+                </Paper>
               </Grid>
               {/* Recent Orders */}
               <Grid item xs={12}>
