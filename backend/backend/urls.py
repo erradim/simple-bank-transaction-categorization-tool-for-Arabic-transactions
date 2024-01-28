@@ -24,5 +24,8 @@ urlpatterns = [
         views.get_transactions_by_category,
         name="transactions_by_category",
     ),
-    path("admin/", admin.site.urls),
+    path(
+        "get_all_transactions/", views.get_all_transactions, name="get_all_transactions"
+    ),
+    # path("admin/", admin.site.urls),
 ]

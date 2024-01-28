@@ -97,3 +97,26 @@ def get_transactions_by_category(request, category):
     ]
 
     return JsonResponse({"transactions": transactions_data})
+
+
+@csrf_exempt
+def get_all_transactions(request):
+    if request.method != "GET":
+        return JsonResponse({"error": "GET request required."}, status=405)
+
+    transactions = Transaction.objects.all()
+
+    if not transactions:
+        return JsonResponse({"error": "No transactions found."}, status=404)
+
+    transactions_data = [
+        {
+            "transactionDate": transaction.transactionDate.strftime("%d/%m/%Y"),
+            "description": transaction.description,
+            "amount": transaction.amount,
+            "category": transaction.category,
+        }
+        for transaction in transactions
+    ]
+
+    return JsonResponse({"transactions": transactions_data})
