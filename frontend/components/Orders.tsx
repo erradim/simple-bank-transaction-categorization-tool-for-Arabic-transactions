@@ -9,7 +9,7 @@ import Title from "./Title";
 
 import axios from "axios";
 
-// Generate Order Data
+/*
 function createData(
   id: number,
   transactionDate: string,
@@ -17,40 +17,13 @@ function createData(
   amount: number
 ) {
   return { id, transactionDate, description, amount };
-}
+}*/
 
 interface Row {
   id: number;
   transactionDate: string;
   description: string;
   amount: number;
-}
-
-async function get_transactions(rows: Array<Row>): Promise<void> {
-  try {
-    const res = await axios.get(
-      "http://" + window.location.hostname + ":8000/get_all_transactions"
-    );
-    res.data.forEach(
-      (element: {
-        id: number;
-        transaction_date: string;
-        description: string;
-        amount: number;
-      }) => {
-        rows.push(
-          createData(
-            element.id,
-            element.transaction_date,
-            element.description,
-            element.amount
-          )
-        );
-      }
-    );
-  } catch (error) {
-    console.log(error);
-  }
 }
 
 /*const rows = [
@@ -71,13 +44,40 @@ async function get_transactions(rows: Array<Row>): Promise<void> {
   createData(14, "02/01/2024", "فاتورة الكهرباء", 200.0),
 ];*/
 
-function preventDefault(event: React.MouseEvent) {
-  event.preventDefault();
-}
-
 export default function Orders() {
-  const rows: Array<Row> = [];
-  get_transactions(rows);
+  const [rows, setRows] = React.useState<Row[]>([]);
+
+  React.useEffect(() => {
+    async function fetchTransactions() {
+      try {
+        const res = await axios.get(
+          "http://127.0.0.1:8000/get_all_transactions/"
+        );
+        const fetchedRows: Row[] = res.data.transactions.map(
+          (t: {
+            id: number;
+            transactionDate: string;
+            description: string;
+            amount: number;
+          }) => ({
+            id: t.id,
+            transactionDate: t.transactionDate,
+            description: t.description,
+            amount: t.amount,
+          })
+        );
+        setRows(fetchedRows);
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+      }
+    }
+    fetchTransactions();
+  }, []);
+
+  function preventDefault(event: React.MouseEvent) {
+    event.preventDefault();
+  }
+
   return (
     <React.Fragment>
       <Title>Transactions</Title>
