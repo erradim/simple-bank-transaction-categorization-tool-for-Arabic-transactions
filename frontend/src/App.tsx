@@ -19,6 +19,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import { mainListItems, secondaryListItems } from "../components/listItems";
 import Orders from "../components/Orders";
+import UploadButton from "../components/UploadButton";
 
 function Copyright(props: any) {
   return (
@@ -169,6 +170,10 @@ function App() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
+              {/* Upload Button */}
+              <Grid item xs={12}>
+                <UploadButton />
+              </Grid>
               {/* Recent Orders */}
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
