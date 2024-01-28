@@ -80,19 +80,20 @@ def get_transactions_by_category(request, category):
     if request.method != "GET":
         return JsonResponse({"error": "GET request required."}, status=405)
 
-    try:
-        transactions = Transaction.objects.filter(category=category)
-        transactions_data = [
-            {
-                "transactionDate": transaction.transactionDate.strftime("%d/%m/%Y"),
-                "description": transaction.description,
-                "amount": transaction.amount,
-                "category": transaction.category,
-            }
-            for transaction in transactions
-        ]
+    transactions = Transaction.objects.filter(category=category)
+    if not transactions:
+        return JsonResponse(
+            {"error": "No transactions found in this category."}, status=404
+        )
 
-        return JsonResponse({"transactions": transactions_data})
+    transactions_data = [
+        {
+            "transactionDate": transaction.transactionDate.strftime("%d/%m/%Y"),
+            "description": transaction.description,
+            "amount": transaction.amount,
+            "category": transaction.category,
+        }
+        for transaction in transactions
+    ]
 
-    except Transaction.DoesNotExist:
-        return JsonResponse({"error": "Category not found."}, status=404)
+    return JsonResponse({"transactions": transactions_data})
