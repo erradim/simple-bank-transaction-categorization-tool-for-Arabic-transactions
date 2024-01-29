@@ -50,6 +50,28 @@ def save_transactions(request):
 
 
 def categorize_transaction(description):
+    """
+    Categorizes a transaction based on its description.
+
+    Parameters:
+    description (str): The description of the transaction.
+
+    Returns:
+    str: The category of the transaction.
+
+    Categories:
+    - Groceries
+    - Utilities
+    - Dining Out
+    - Entertainment
+    - Shopping
+    - Transportation
+    - Healthcare
+    - Technology
+    - Travel
+
+    If the description does not match any category, it is categorized as "Miscellaneous".
+    """
     categories = {
         "Groceries": ["بقالة", "سوبرماركت", "محل طعام"],
         "Utilities": ["كهرباء", "ماء", "غاز"],
@@ -68,12 +90,6 @@ def categorize_transaction(description):
                 return category
 
     return "Miscellaneous"
-
-
-# Example Usage:
-# transaction = Transaction.objects.get(id=1)
-# transaction.category = categorize_transaction(transaction.description)
-# transaction.save()
 
 
 @csrf_exempt

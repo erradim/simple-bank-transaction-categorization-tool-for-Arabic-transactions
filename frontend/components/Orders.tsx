@@ -25,40 +25,12 @@ const categories = [
   "Travel",
 ];
 
-/*
-function createData(
-  id: number,
-  transactionDate: string,
-  description: string,
-  amount: number
-) {
-  return { id, transactionDate, description, amount };
-}*/
-
 interface Row {
   id: number;
   transactionDate: string;
   description: string;
   amount: number;
 }
-
-/*const rows = [
-  createData(1, "01/01/2024", "بقالة الأمان", 150.0),
-  createData(2, "02/01/2024", "فاتورة الكهرباء", 200.0),
-  createData(3, "03/01/2024", "مطعم النيل", 75.5),
-
-  createData(4, "01/01/2024", "بقالة الأمان", 150.0),
-  createData(5, "02/01/2024", "فاتورة الكهرباء", 200.0),
-  createData(6, "03/01/2024", "مطعم النيل", 75.5),
-  createData(7, "01/01/2024", "بقالة الأمان", 150.0),
-  createData(8, "02/01/2024", "فاتورة الكهرباء", 200.0),
-  createData(9, "03/01/2024", "مطعم النيل", 75.5),
-  createData(10, "01/01/2024", "بقالة الأمان", 150.0),
-  createData(11, "02/01/2024", "فاتورة الكهرباء", 200.0),
-  createData(12, "03/01/2024", "مطعم النيل", 75.5),
-  createData(13, "01/01/2024", "بقالة الأمان", 150.0),
-  createData(14, "02/01/2024", "فاتورة الكهرباء", 200.0),
-];*/
 
 export default function Orders() {
   const [rows, setRows] = React.useState<Row[]>([]);
@@ -77,7 +49,14 @@ export default function Orders() {
 
   React.useEffect(() => {
     // Function to fetch transactions for a specific category or all transactions
-    async function fetchTransactions(category: string = "") {
+    /**
+     * Fetches transactions from the server based on the specified category.
+     * If no category is provided, it fetches all transactions.
+     *
+     * @param category - The category of transactions to fetch.
+     * @returns An array of fetched rows representing the transactions.
+     */
+    async function fetchTransactions(category: string = ""): Promise<Row[]> {
       try {
         const url = category
           ? `http://127.0.0.1:8000/transactions/${category}/`
@@ -106,7 +85,11 @@ export default function Orders() {
     // Initialize an empty array to store transactions from all selected categories
     let allFetchedTransactions: Row[] = [];
 
-    // Function to update transactions
+    /**
+     * Updates the transactions based on the selected categories.
+     * If no category is selected, fetches all transactions.
+     * If categories are selected, fetches transactions for each selected category and aggregates them.
+     */
     const updateTransactions = async () => {
       if (selectedCategories.length === 0) {
         // If no category is selected, fetch all transactions
