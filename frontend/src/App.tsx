@@ -111,52 +111,58 @@ function App() {
   const handleSendToBackend = async () => {
     // Define the schema for a single transaction
     const transactionSchema = yup.object().shape({
-      transactionDate: yup
-        .date()
-        .required()
-        .transform((value) => value.toISOString().split("T")[0]),
+      transactionDate: yup.date().required(),
       description: yup.string().required(),
       amount: yup.number().positive().required(),
     });
 
-    // Validate each transaction in your data array
+    // Prepare and validate each transaction
     try {
-      const validTransactions = await Promise.all(
-        parsedCsvData.map(async (transaction) => {
-          try {
-            // Transform the date to 'dd/mm/yyyy' format
-            transaction.transactionDate = new Date(transaction.transactionDate)
-              .toLocaleDateString("en-GB")
-              .split("/")
-              .reverse()
-              .join("/");
+      const transactionsToValidate = parsedCsvData.map((transaction) => {
+        // Transform the date string into a JavaScript Date object
+        const dateParts = transaction.transactionDate.split("/");
+        const formattedDate = new Date(
+          dateParts[2],
+          dateParts[1] - 1,
+          dateParts[0]
+        );
+        return { ...transaction, transactionDate: formattedDate };
+      });
 
-            return await transactionSchema.validate(transaction);
-          } catch (error) {
+      const validTransactions = await Promise.all(
+        transactionsToValidate.map((transaction) =>
+          transactionSchema.validate(transaction).catch((error) => {
             console.error("Validation error:", error);
             return null;
-          }
+          })
+        )
+      );
+
+      // Filter out invalid transactions
+      const filteredTransactions = validTransactions.filter((t) => t !== null);
+
+      // Transform the date back to "dd/mm/yyyy" format
+      const transactionsForBackend = filteredTransactions.map(
+        (transaction) => ({
+          ...transaction,
+          transactionDate:
+            transaction.transactionDate.toLocaleDateString("en-GB"),
         })
       );
 
-      // Filter out any null values that failed validation
-      const filteredTransactions = validTransactions.filter((t) => t !== null);
-
-      // Now, send the validated data to your backend
+      // Send to backend
       axios
         .post("http://127.0.0.1:8000/save_transactions/", {
-          transactions: filteredTransactions,
+          transactions: transactionsForBackend,
         })
         .then((response) => {
-          console.log("Response from backend: ", response.data);
+          console.log("Data successfully sent to backend", response.data);
         })
         .catch((error) => {
           console.error("Error sending data to backend:", error);
-          // Handle error response
         });
     } catch (error) {
       console.error("Error validating transactions:", error);
-      // Handle validation error
     }
   };
 

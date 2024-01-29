@@ -25,21 +25,20 @@ def save_transactions(request):
                 amount = t["amount"]
                 category = categorize_transaction(description)
 
-                Transaction.objects.create(
+                transaction = Transaction(
                     transactionDate=transaction_date,
                     description=description,
                     amount=amount,
                     category=category,
                 )
 
-                Transaction.save()
+                transaction.save()
+
             except KeyError as e:
-                # Handle missing fields in a transaction
                 return JsonResponse(
                     {"error": f"Missing field in transaction data: {e}"}, status=400
                 )
             except ValueError as e:
-                # Handle incorrect date format
                 return JsonResponse(
                     {"error": f"Incorrect date format: {e}"}, status=400
                 )
