@@ -148,8 +148,7 @@ function App() {
           transactions: filteredTransactions,
         })
         .then((response) => {
-          console.log("Data successfully sent to backend", response.data);
-          // Handle successful response
+          console.log("Response from backend: ", response.data);
         })
         .catch((error) => {
           console.error("Error sending data to backend:", error);
@@ -233,24 +232,26 @@ function App() {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              {/* Upload CSV Button */}
-              <Grid item xs={12}>
+            <Grid item xs={12}>
+              {/* Single Grid Item for both Buttons */}
+              <Grid item xs={12} style={{ marginBottom: "20px" }}>
+                {/* Upload CSV Button */}
                 <InputFileUpload onFileParsed={handleFileParsed} />
-              </Grid>
-              {/* Send Validated Data to Backend Button */}
-              <Grid item xs={12}>
+
+                {/* Send Validated Data to Backend Button */}
                 <Button
                   variant="contained"
                   onClick={() => {
                     handleSendToBackend();
                   }}
+                  style={{ marginLeft: "10px" }} // Add some spacing between the buttons
                 >
                   Save Data
                 </Button>
               </Grid>
+
               {/* Display Parsed CSV Data */}
-              <Grid item xs={12}>
+              <Grid item xs={12} style={{ marginBottom: "20px" }}>
                 <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
                   {/* Component to display parsed data, passing the data as a prop */}
                   <ParsedDataDisplay data={parsedCsvData} />

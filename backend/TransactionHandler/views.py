@@ -31,6 +31,8 @@ def save_transactions(request):
                     amount=amount,
                     category=category,
                 )
+
+                Transaction.save()
             except KeyError as e:
                 # Handle missing fields in a transaction
                 return JsonResponse(

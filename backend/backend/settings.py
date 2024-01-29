@@ -31,13 +31,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "TransactionHandler",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "TransactionHandler.apps.TransactionhandlerConfig",
     "corsheaders",
 ]
 
@@ -57,9 +57,11 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "https://localhost:5173",
+    "https://localhost:3000",
 ]
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
+    "https://localhost:3000",
 ]
 
 ROOT_URLCONF = "backend.urls"
@@ -88,12 +90,8 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "erradim",
-        "USER": "erradim",
-        "PASSWORD": "ERRADI",
-        "HOST": "localhost",
-        "PORT": "5433",
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
