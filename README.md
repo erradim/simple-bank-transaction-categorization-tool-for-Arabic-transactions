@@ -3,7 +3,7 @@
 ## Overview
 This application is designed to automatically categorize transactions based on a set of predefined rules. It aims to provide a user-friendly interface for users to upload and categorize their Arabic bank transactions.
 
-## Requirements
+## Development
 
 ### Frontend
 - React, Material UI, Yup.
